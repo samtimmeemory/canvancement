@@ -19,7 +19,7 @@ $schema_name = 'canvas_data';
  * also need to make sure the api.php file is in the same directory
  * as this script
  */
-$schema_file = 'schema.json';
+$schema_file = 'compressed/schema.json';
 
 /*
  * If you do not use the Canvas Data Command Line Interface tool
@@ -43,7 +43,7 @@ $cd_api_secret = getenv( 'CD_API_SECRET' ) !== FALSE ? getenv( 'CD_API_SECRET' )
  * enumerated_boolean: simulated boolean types with ENUM('false','true')
  */
 $options = array ( 
-    'drop_schema' => TRUE, 
+    'drop_schema' => FALSE, 
     'comments' => FALSE,
     'enumerated_boolean' => TRUE,
 );
@@ -56,7 +56,7 @@ $options = array (
  * No sanity checking is done on the filename, so make sure you don't clobber
  * something important.
  */
-// $output_filename = 'create_canvas_data.sql';
+$output_filename = 'create_canvas_data.sql';
 
 // END OF CONFIGURATION
 
@@ -199,7 +199,7 @@ function create_mysql_schema($cdschema = NULL, $schema_name = 'canvas_data', $op
       }
       if ($coltype == 'enumbool') {
         $coltype = 'ENUM';
-        $colextra = "('false','true')";
+        $colextra = "('true')";
       }
       if (isset( $column['extra'] )) {
         $colextra .= $column['extra'];
@@ -266,7 +266,7 @@ function create_mysql_schema($cdschema = NULL, $schema_name = 'canvas_data', $op
   $version_code = explode( '.', $cdschema['version'] );
   $version = 0;
   foreach ( $version_code as $version_part ) {
-    $version = $version * 100 + $version_part;
+    $version .= $version_part;
   }
   $versions = "INSERT INTO versions (table_name, incremental, version) VALUES\n";
   foreach ( $table_types as $table_name => $incremental ) {
